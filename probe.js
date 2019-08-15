@@ -7,6 +7,9 @@ const debug = require('debug')('swatch:probe'),
 
     inspector = require('./remoteInspector');
 
+// Disable verbose probe logging unless SWATCH_PROBE is true
+if (! process.env.SWATCH_PROBE) debug.disable();
+
 class Probe extends EE {
     constructor(port, opts, done) {
         super();
