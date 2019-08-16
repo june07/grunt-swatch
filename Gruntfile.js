@@ -31,28 +31,15 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     swatch: {
       default: {
-        ports: [
-          'tcp/45670'
-        ],
-        options: {
-          inspectPort: 9229
-        }
-      },
-      default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        },
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+        targets: [{
+          port: 'tcp/45670',
+          actions: [{
+            name: 'inspector',
+            args: {
+              port: 9230
+            }
+          }]
+        }],
       }
     },
 

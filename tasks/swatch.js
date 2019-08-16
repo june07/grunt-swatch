@@ -20,17 +20,13 @@ module.exports = function(grunt) {
   // creation: http://gruntjs.com/creating-tasks
 
   grunt.registerMultiTask('swatch', 'Run tasks whenever watched sockets change.', function() {
-    let done = this.async();
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
-    if (this.data.ports) this.data.ports.forEach(port => {
+    let done = this.async(),
+      options = this.options;
+
+    if (this.data.targets) this.data.targets.forEach(target => {
       debug('Executing ss')
-      debugger
       
-      new Probe(port, options, error => {
+      new Probe(target, options, error => {
         if (error) {
           if (typeof error === 'string') {
             error = new Error(error);
