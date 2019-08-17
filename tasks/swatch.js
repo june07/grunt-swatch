@@ -21,12 +21,13 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('swatch', 'Run tasks whenever watched sockets change.', function() {
     let done = this.async(),
-      options = this.options;
+      options = this.options,
+      test = this.data.test;
 
     if (this.data.targets) this.data.targets.forEach(target => {
       debug('Executing ss')
       
-      new Probe(target, options, error => {
+      target.probe = new Probe(target, options, error => {
         if (error) {
           if (typeof error === 'string') {
             error = new Error(error);
@@ -35,6 +36,22 @@ module.exports = function(grunt) {
           grunt.fatal(error);
         }
       });
+
+      if (test) {
+        new Promise(resolve => {
+          let timeout = setInterval(function() {
+            if (target.probe.triggered.connect) {
+              clearInterval(timeout);
+              resolve();
+            } else {
+              debug('Waiting on probe to be triggered.');
+            } 
+          }, 1000);
+        })
+        .then(() => {
+          done();
+        });
+      }
     });
   });
 

@@ -8,7 +8,7 @@ const debug = require('debug')('swatch:probe'),
     inspector = require('./remoteInspector');
 
 // Disable verbose probe logging unless SWATCH_PROBE is true
-if (! process.env.SWATCH_PROBE) require('debug').disable();
+//if (! process.env.SWATCH_PROBE) require('debug').disable();
 
 class Probe extends EE {
     constructor(target, opts, done) {
@@ -38,6 +38,12 @@ Probe.prototype.emit = function() {
 Probe.prototype._pollSocket = function(socket, target, opts, callback) {
     let self = this;
 
+    self.triggered = {
+        connect: false,
+        error: false,
+        end: false
+    };
+
     exec('ss -lnp \'sport = ' + socket.port + '\' | grep -Po \'pid\=\\d+\'', (error, stdout, stderr) => {
         if (error) {
             return setTimeout(() => {
@@ -50,16 +56,19 @@ Probe.prototype._pollSocket = function(socket, target, opts, callback) {
         let pid = stdout.split('=')[1];
         new net.Socket().connect(socket.port, socket.host)
         .on('connect', () => {
-            debug('connected');
+            debug('connect');
+            self.triggered.connect = true;
             this.action = self._takeAction({pid}, target, opts);
         })
         .on('error', () => {
             debug('error');
+            self.triggered.error = true;
             this.action.errorAction();
             self._pollSocket(socket, target, opts, callback);
         })
         .on('end', () => {
-            debug('disconnect');
+            debug('end');
+            self.triggered.end = true;
             this.action.endAction();
             self._pollSocket(socket, target, opts, callback);
         });

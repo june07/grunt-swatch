@@ -28,8 +28,28 @@ module.exports = function(grunt) {
       tests: ['tmp']
     },
 
+    // Need to start a test server
+    connect: {
+      server: {
+        options: {
+          port: 45670
+        }
+      }
+    },
     // Configuration to be run (and then tested).
     swatch: {
+      test: {
+        test: true,
+        targets: [{
+          port: 'tcp/45670',
+          actions: [{
+            name: 'inspector',
+            args: {
+              port: 9229
+            }
+          }]
+        }]
+      },
       default: {
         targets: [{
           port: 'tcp/45670',
@@ -57,10 +77,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'swatch', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'connect', 'swatch:test']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
