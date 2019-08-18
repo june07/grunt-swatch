@@ -5,7 +5,7 @@ const debug = require('debug')('swatch:probe'),
     net = require('net'),
     { exec } = require('child_process'),
 
-    inspector = require('./remoteInspector');
+    nim = require('./nim');
 
 // Disable verbose probe logging unless SWATCH_PROBE is true
 //if (! process.env.SWATCH_PROBE) require('debug').disable();
@@ -81,10 +81,10 @@ Probe.prototype._takeAction = function(monitoredProcess, target, opts) {
     if (target === undefined) return;
     target.actions.map(action => {
         switch (action.name) {
-            case 'inspector':
-                inspector.open(monitoredProcess.pid, action.args.port);
-                action.errorAction = () => { inspector.close(); };
-                action.endAction = () => { inspector.close(); };
+            case 'nim':
+                nim.open(monitoredProcess.pid, action.args.port);
+                action.errorAction = () => { nim.close(); };
+                action.endAction = () => { nim.close(); };
                 return action; break;
         }
     });

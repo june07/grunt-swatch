@@ -1,6 +1,6 @@
 'use strict';
 
-const debug = require('debug')('remoteInspector'),
+const debug = require('debug')('nim'),
     { exec } = require('child_process');
 
 function open(pid, port, host, wait) {

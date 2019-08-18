@@ -43,7 +43,7 @@ module.exports = function(grunt) {
         targets: [{
           port: 'tcp/45670',
           actions: [{
-            name: 'inspector',
+            name: 'nim',
             args: {
               port: 9229
             }
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
         targets: [{
           port: 'tcp/45670',
           actions: [{
-            name: 'inspector',
+            name: 'nim',
             args: {
               port: 9230
             }
