@@ -18,16 +18,18 @@ grunt.loadNpmTasks('grunt-swatch');
 ```
 
 ## The "swatch" task
-
+Run this task with the `grunt swatch` command.
 ### Overview
 In your project's Gruntfile, add a section named `swatch` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
   swatch: {
-    targets: {
-      // Target-specific file lists and/or options go here.
-    },
+    targets: [
+        { port: 'tcp/1234', actions: [ { name: 'action1', args: { arg1: 'value1', arg2: 'value2', ... }, {}, ... } ] },
+        { port: 'tcp/9876', actions: [ { name: 'action2', args: { arg1: 'a2-value1', arg2: 'a2-value2', ... }, {}, ... } ] },
+        ...
+    ],
   },
 });
 ```
@@ -36,13 +38,18 @@ grunt.initConfig({
 
 ### targets.port
 Type: `String`
-Default value: `''`
-
+Default value: `none`
 The ports key is used to tell Grunt which application port to probe.
 
 ### targets.actions
 Type: `Array`
-Default value: `[]`
+Default value: `none`
+The actions key is an array of action objects which are action configuration objects.  The current availble action is the `nim` action which starts the Node.js debugger via the inspector protocol and signal handlers.
+
+From https://nodejs.org/api/process.html#process_signal_events:
+> `'SIGUSR1'` is reserved by Node.js to start the debugger. It's possible to install a listener but doing so might interfere with the debugger.
+
+Note that currently the only port that can be used is the default 9229 due to a limitation of Node.js.
 
 ### Usage Examples
 
@@ -53,9 +60,9 @@ grunt.initConfig({
       targets: {
         port: 'tcp/45670',
         actions: [{
-          name: 'inspector',
+          name: 'nims',
           args: {
-            port: 9230
+            port: 9229
           }
         }]
       },
