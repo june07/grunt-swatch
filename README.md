@@ -58,7 +58,7 @@ grunt.initConfig({
       targets: {
         port: 'tcp/45670',
         actions: [{
-          name: 'nims',
+          name: 'nim',
           args: {
             port: 9229
           }
