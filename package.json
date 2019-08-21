@@ -1,7 +1,7 @@
 {
   "name": "grunt-swatch",
   "description": "Run tasks whenever watched sockets change.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/june07/grunt-watch",
   "author": {
     "name": "june07",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/june07/grunt-watch.git"
+    "url": "git://github.com/june07/grunt-swatch.git"
   },
   "bugs": {
     "url": "https://github.com/june07/grunt-watch/issues"
