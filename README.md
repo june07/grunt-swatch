@@ -1,34 +1,76 @@
-# fiveo
-[![Build Status](https://travis-ci.org/june07/fiveo.svg?branch=master)](https://travis-ci.org/june07/fiveo)
+# grunt-swatch
 
+> Run tasks whenever watched sockets change.
+## Getting Started
+This plugin requires Grunt `~0.4.5`
 
+If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
-A tiny JavaScript library to add some sweetness to Node.js core's inspector module.  Adds some key missing features:
-* Adding the ability to start the inspector via the [SIGNAL method](https://nodejs.org/api/process.html) using ANY PORT and not just 9229.  Opens up the possible debug applications and workflows tremendously.
-* STOPPING the inspector instance using the SIGUSR2 signal (will stop both sessions started with SIGUSR2 and the native SIGUSR1).  It's likely that leavning the inspector listening (production environments...) is a bad idea. 
-
-## Installation
-```bash
-$ npm install fiveo
+```shell
+npm install grunt-swatch --save-dev
 ```
 
-## Usage
-`fiveo` exposes a function; simply pass this function the name of your module, and it will return a decorated version of `console.error` for you to pass debug statements to. This will allow you to toggle the debug output for different parts of your module as well as the module as a whole.
-
-Example [_yourapp.js_](./examples/node/app.js):
+Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
 
 ```js
-require('fiveo');
-// The rest of your code...
+grunt.loadNpmTasks('grunt-swatch');
 ```
 
+## The "swatch" task
+Run this task with the `grunt swatch` command.
+### Overview
+In your project's Gruntfile, add a section named `swatch` to the data object passed into `grunt.initConfig()`.
 
-## Environment Variables
-When running through Node.js, you can set a few environment variables that will
-change the behavior of the debug logging:
+```js
+grunt.initConfig({
+  swatch: {
+    targets: [
+        { port: 'tcp/1234', actions: [ { name: 'action1', args: { arg1: 'value1', arg2: 'value2', ... }, {}, ... } ] },
+        { port: 'tcp/9876', actions: [ { name: 'action2', args: { arg1: 'a2-value1', arg2: 'a2-value2', ... }, {}, ... } ] },
+        ...
+    ],
+  },
+});
+```
 
-| Name      | Syntax | Purpose                                | Examples         |
-|-----------|--------|-----------------------------------------|----------------|
-| `INSPECT` | [hostname:port] | Declares which host:port you want the inspector to listen on. | 9230 or localhost:9230
+## targets
 
-__Note:__ The default value for INSPECT is `localhost:9229`.
+### targets.port
+Type: `String`
+Default value: `none`
+The ports key is used to tell Grunt which application port to probe.
+
+### targets.actions
+Type: `Array`
+Default value: `none`
+The actions key is an array of action objects which are action configuration objects.  The current availble action is the `nim` action which starts the Node.js debugger via the inspector protocol and signal handlers.
+
+From https://nodejs.org/api/process.html#process_signal_events:
+> `'SIGUSR1'` is reserved by Node.js to start the debugger. It's possible to install a listener but doing so might interfere with the debugger.
+Note that currently the only port that can be used is the default 9229 due to a limitation of Node.js.
+
+### Usage Examples
+
+```js
+grunt.initConfig({
+  swatch: {
+    default: {
+      targets: {
+        port: 'tcp/45670',
+        actions: [{
+          name: 'nims',
+          args: {
+            port: 9229
+          }
+        }]
+      },
+    }
+  }
+});
+```
+
+## Contributing
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+
+## Release History
+_(Nothing yet)_
