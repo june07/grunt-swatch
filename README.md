@@ -63,7 +63,7 @@ grunt.initConfig({
             port: 9229
           }
         }]
-      },
+      }
     }
   }
 });
